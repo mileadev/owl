@@ -41,7 +41,8 @@ legacy = [
 
 [project.urls]
 Homepage = "https://www.camel-ai.org/"
-Repository = "https://github.com/camel-ai/owl"
+Repository = "https://github.com/mileadev/owl"
+Upstream = "https://github.com/camel-ai/owl"
 Documentation = "https://docs.camel-ai.org"
 
 [tool.hatch.build.targets.wheel]

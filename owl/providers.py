@@ -64,6 +64,8 @@ def resolve_provider(provider: str | None = None, model: str | None = None) -> P
         raise ValueError("Set a valid model identifier for the selected provider.")
 
     if selected == "ollama":
+        if selected_model.endswith(":cloud"):
+            raise ValueError("Use the ollama-cloud provider for cloud models.")
         return ProviderConfig(
             selected,
             selected_model,

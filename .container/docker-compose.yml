@@ -9,6 +9,10 @@ services:
       OLLAMA_BASE_URL: ${OLLAMA_DOCKER_BASE_URL:-http://host.docker.internal:11434/v1}
       GRADIO_SERVER_NAME: 0.0.0.0
       GRADIO_SERVER_PORT: "7860"
+      HOME: /tmp
+      XDG_CACHE_HOME: /tmp/cache
+      HF_HOME: /tmp/hf
+      GRADIO_ANALYTICS_ENABLED: "False"
     ports:
       - "127.0.0.1:7860:7860"
     extra_hosts:
@@ -22,4 +26,7 @@ services:
       - /tmp:rw,nosuid,nodev,size=128m
     user: "10001:10001"
     init: true
+    pids_limit: 128
+    mem_limit: 2g
+    cpus: 2.0
     restart: unless-stopped

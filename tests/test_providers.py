@@ -38,6 +38,15 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(result.url,
                          "https://bedrock-runtime.eu-west-1.amazonaws.com/openai/v1")
 
+    def test_cloud_model_cannot_hide_behind_local_provider(self):
+        with patch.dict(os.environ, {"OLLAMA_MODEL": "glm-4.6:cloud"}, clear=True):
+            with self.assertRaisesRegex(ValueError, "ollama-cloud"):
+                resolve_provider("ollama")
+
+    def test_link_local_endpoint_rejected(self):
+        with self.assertRaises(ValueError):
+            _local_endpoint("http://169.254.169.254/v1")
+
     def test_no_fallback(self):
         with self.assertRaises(ValueError):
             resolve_provider("unknown")
