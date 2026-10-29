@@ -29,3 +29,5 @@ The container listens on port 7860 internally, published to host loopback only. 
 Optional (untrusted) legacy toolkits: install with `uv pip install -e '.[legacy]'`. Keep these outside production and never expose host command execution to untrusted input.\n\nValidation: `python -m unittest discover -s tests -v`, `python -m compileall -q owl examples`, and `python scripts/check_english.py`. Live inference tests require an accessible model and credentials.
 
 The previous `.container/build_docker*.{sh,bat}` and `run_in_docker*.{sh,bat}` helpers are retired. Use standard Docker Compose commands instead.
+
+CAMEL 0.2.84 currently requires MCP SDK v1 for its `FastMCP` imports. Do not separately upgrade `mcp` to v2 in this environment.

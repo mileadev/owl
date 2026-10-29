@@ -29,3 +29,7 @@ Cloud prompts leave the machine and may incur usage charges. The CAMEL Bedrock m
 The cleanup removes obsolete bilingual Docker helper scripts, translated web apps, Chinese-only investment workflows and Chinese-language fixture data. Translation-only or orphaned example artifacts are deleted rather than advertised as runnable.
 
 Default installation does not load community examples. Legacy runners that expose tool-based code execution now require explicit opt-in using `OWL_ENABLE_UNSAFE_LEGACY_TOOLS=I_ACCEPT_THE_RISK`. This flag is **not** a sandbox: run only in an isolated disposable VM without production credentials.
+
+## MCP SDK compatibility
+
+CAMEL 0.2.84 imports `FastMCP` from `mcp.server`. MCP Python SDK 2.x removed the symbol. Until CAMEL is migrated, constrain `mcp>=1.28,<2` and keep security updates on the maintained v1 line. Re-enable SDK 2 only after full integration tests pass.
