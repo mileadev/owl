@@ -26,7 +26,9 @@ docker compose -f .container/docker-compose.yml down
 
 The restricted standard-library HTTP UI listens on port 7860 internally, published to host loopback only. Docker's Ollama endpoint defaults to `host.docker.internal`; use `OLLAMA_DOCKER_BASE_URL` for other private endpoints. Docker bridge networking on Linux requires a reachable, restricted Ollama listener.
 
-Optional (untrusted) legacy toolkits: install with `uv pip install -e '.[legacy]'`. Keep these outside production and never expose host command execution to untrusted input.\n\nValidation: `python -m unittest discover -s tests -v`, `python -m compileall -q owl examples`, and `python scripts/check_english.py`. Live inference tests require an accessible model and credentials.
+Optional (untrusted) legacy toolkits: install with `uv pip install -e '.[legacy]'`. Keep these outside production and never expose host command execution to untrusted input.
+
+Validation: `python -m unittest discover -s tests -v`, `python -m compileall -q owl examples`, and `python scripts/check_english.py`. Live inference tests require an accessible model and credentials.
 
 The previous `.container/build_docker*.{sh,bat}` and `run_in_docker*.{sh,bat}` helpers are retired. Use standard Docker Compose commands instead.
 

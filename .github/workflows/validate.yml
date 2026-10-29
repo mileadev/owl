@@ -43,7 +43,7 @@ jobs:
             --cap-drop ALL --security-opt no-new-privileges \
             -p 127.0.0.1:7860:7860 \
             -e HOME=/tmp -e XDG_CACHE_HOME=/tmp/cache \
-            -e GRADIO_ANALYTICS_ENABLED=False \
+            -e OWL_ALLOW_NON_LOOPBACK=I_UNDERSTAND_THE_RISK \
             -e OWL_SERVER_HOST=0.0.0.0 owl-ci
           for i in $(seq 1 40); do
             if curl -fsS http://127.0.0.1:7860/ >/dev/null; then
