@@ -187,7 +187,7 @@ Requirements:
 def save_chat_history(chat_history: List[dict[Any, Any]], company_name: str) -> None:
     """Analyze chat history and extract tool call information."""
 
-    # 保存聊天历史记录到文件
+    # 
     chat_history_file = os.path.join(LOG_DIR, f"{company_name}_chat_history.json")
     with open(chat_history_file, "w", encoding="utf-8") as f:
         json.dump(chat_history, f, ensure_ascii=False, indent=2)

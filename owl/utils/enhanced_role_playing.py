@@ -595,7 +595,6 @@ async def arun_society(
             assistant_response.terminated
             or user_response.terminated
             or "TASK_DONE" in user_response.msg.content
-            or "任务已完成" in user_response.msg.content
         ):
             break
 

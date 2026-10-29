@@ -11,7 +11,6 @@ A multi-agent A-share investment analysis system based on OWL/camel framework, i
 </div>
 
 [English](README_EN.md) |
-[中文](README.md) |
 [Acknowledgements](#-acknowledgements) |
 [Example Results](#-example-results)
 

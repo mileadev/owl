@@ -1,6 +1,5 @@
 # 📈 Stock Analysis Agent
 
-[简体中文](README-zh.md) | English
 
 <p>
 	<p align="center">
