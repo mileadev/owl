@@ -1,0 +1,35 @@
+name: Security Analysis
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  codeql:
+    name: CodeQL Python
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v4.39.1
+        with:
+          languages: python
+      - uses: github/codeql-action/analyze@v4.39.1
+  image:
+    name: Trivy image vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t owl-security:latest -f .container/Dockerfile .
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: owl-security:latest
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: CRITICAL,HIGH

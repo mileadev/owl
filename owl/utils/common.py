@@ -32,5 +32,5 @@ def extract_pattern(content: str, pattern: str) -> Optional[str]:
         else:
             return None
     except Exception as e:
-        logger.warning(f"Error extracting answer: {e}, current content: {content}")
+        logger.warning("Error extracting answer: %s", type(e).__name__)
         return None

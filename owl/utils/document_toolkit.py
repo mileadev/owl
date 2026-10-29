@@ -20,20 +20,15 @@ from camel.utils import retry_on_error
 from camel.logger import get_logger
 from camel.models import BaseModelBackend
 from chunkr_ai import Chunkr
-import requests
 import mimetypes
 import json
 from typing import List, Optional, Tuple, Literal
 from urllib.parse import urlparse
 import os
-import subprocess
 import xmltodict
-import nest_asyncio
 import traceback
 import asyncio
-from crawl4ai import AsyncWebCrawler
 
-nest_asyncio.apply()
 
 logger = get_logger(__name__)
 
@@ -69,9 +64,12 @@ class DocumentProcessingToolkit(BaseToolkit):
             Tuple[bool, str]: A tuple containing a boolean indicating whether the document was processed successfully, and the content of the document (if success).
         """
 
-        logger.debug(
-            f"Calling extract_document_content function with document_path=`{document_path}`"
-        )
+        # Reject remote URLs and paths outside the explicitly configured document root.
+        from owl.safe_io import require_local_document
+        try:
+            document_path = str(require_local_document(document_path))
+        except (TypeError, ValueError, PermissionError) as exc:
+            return False, str(exc)
 
         if any(document_path.endswith(ext) for ext in [".jpg", ".jpeg", ".png"]):
             res = self.image_tool.ask_question_about_image(
@@ -111,11 +109,11 @@ class DocumentProcessingToolkit(BaseToolkit):
 
             try:
                 data = xmltodict.parse(content)
-                logger.debug(f"The extracted xml data is: {data}")
+                logger.debug("Extracted XML document")
                 return True, data
 
             except Exception:
-                logger.debug(f"The raw xml data is: {content}")
+                logger.debug("XML extraction failed; returning raw content")
                 return True, content
 
         if self._is_webpage(document_path):
@@ -147,37 +145,12 @@ class DocumentProcessingToolkit(BaseToolkit):
                     return True, elements_str
 
             except Exception as e:
-                logger.error(traceback.format_exc())
-                return False, f"Error occurred while processing document: {e}"
+                logger.error("Document parsing failed: %s", type(e).__name__)
+                return False, "Document parsing failed."
 
     def _is_webpage(self, url: str) -> bool:
-        r"""Judge whether the given URL is a webpage."""
-        try:
-            parsed_url = urlparse(url)
-            is_url = all([parsed_url.scheme, parsed_url.netloc])
-            if not is_url:
-                return False
-
-            path = parsed_url.path
-            file_type, _ = mimetypes.guess_type(path)
-            if file_type is not None and "text/html" in file_type:
-                return True
-
-            response = requests.head(url, allow_redirects=True, timeout=10)
-            content_type = response.headers.get("Content-Type", "").lower()
-
-            if "text/html" in content_type:
-                return True
-            else:
-                return False
-
-        except requests.exceptions.RequestException as e:
-            # raise RuntimeError(f"Error while checking the URL: {e}")
-            logger.warning(f"Error while checking the URL: {e}")
-            return False
-
-        except TypeError:
-            return True
+        """Remote URL retrieval is disabled for local document processing."""
+        return False
 
     @retry_on_error()
     async def _extract_content_with_chunkr(
@@ -219,72 +192,7 @@ class DocumentProcessingToolkit(BaseToolkit):
 
     @retry_on_error()
     def _extract_webpage_content(self, url: str) -> str:
-        api_key = os.getenv("FIRECRAWL_API_KEY")
-        if api_key is not None:
-            from firecrawl import FirecrawlApp
-
-            # Initialize the FirecrawlApp with your API key
-            app = FirecrawlApp(api_key=api_key)
-
-            data = app.crawl_url(
-                url, params={"limit": 1, "scrapeOptions": {"formats": ["markdown"]}}
-            )
-            logger.debug(f"Extractred data from {url}: {data}")
-            if len(data["data"]) == 0:
-                if data["success"]:
-                    return "No content found on the webpage."
-                else:
-                    return "Error while crawling the webpage."
-
-            return str(data["data"][0]["markdown"])
-        else:
-            logger.warning(
-                "Firecrawl API key is not set. Use crawl4ai to extract the content of the webpage."
-            )
-            return self._extract_webpage_content_with_crawl4ai(url)
-
-    def _extract_webpage_content_with_crawl4ai(self, url: str) -> str:
-        r"""Extract the content of a webpage using crawl4ai."""
-        try:
-            # Use asyncio.run to execute the async function
-            return asyncio.run(self._async_extract_webpage_content_with_crawl4ai(url))
-        except Exception as e:
-            logger.error(f"Error while extracting the content of the webpage: {e}")
-            return "Error while extracting the content of the webpage."
-
-    async def _async_extract_webpage_content_with_crawl4ai(self, url: str) -> str:
-        r"""Async helper method to extract webpage content using crawl4ai."""
-        try:
-            async with AsyncWebCrawler(verbose=False) as crawler:
-                result = await crawler.arun(url=url)
-                if result.markdown:
-                    return result.markdown
-                else:
-                    logger.warning("No markdown content extracted from the webpage.")
-                    return "No content found on the webpage."
-        except Exception as e:
-            logger.error(
-                f"Error while extracting the content of the webpage with crawl4ai: {e}"
-            )
-            return "Error while extracting the content of the webpage."
-
-    def _download_file(self, url: str):
-        r"""Download a file from a URL and save it to the cache directory."""
-        try:
-            response = requests.get(url, stream=True)
-            response.raise_for_status()
-            file_name = url.split("/")[-1]
-
-            file_path = os.path.join(self.cache_dir, file_name)
-
-            with open(file_path, "wb") as file:
-                for chunk in response.iter_content(chunk_size=8192):
-                    file.write(chunk)
-
-            return file_path
-
-        except requests.exceptions.RequestException as e:
-            print(f"Error downloading the file: {e}")
+        raise PermissionError("Remote document retrieval is disabled.")
 
     def _get_formatted_time(self) -> str:
         import time
@@ -292,24 +200,8 @@ class DocumentProcessingToolkit(BaseToolkit):
         return time.strftime("%m%d%H%M")
 
     def _unzip_file(self, zip_path: str) -> List[str]:
-        if not zip_path.endswith(".zip"):
-            raise ValueError("Only .zip files are supported")
-
-        zip_name = os.path.splitext(os.path.basename(zip_path))[0]
-        extract_path = os.path.join(self.cache_dir, zip_name)
-        os.makedirs(extract_path, exist_ok=True)
-
-        try:
-            subprocess.run(["unzip", "-o", zip_path, "-d", extract_path], check=True)
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"Failed to unzip file: {e}")
-
-        extracted_files = []
-        for root, _, files in os.walk(extract_path):
-            for file in files:
-                extracted_files.append(os.path.join(root, file))
-
-        return extracted_files
+        from owl.safe_io import extract_zip_safely
+        return extract_zip_safely(zip_path, self.cache_dir)
 
     def get_tools(self) -> List[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions in the toolkit.

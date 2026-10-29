@@ -1,45 +1,32 @@
 services:
   owl:
-    # Option 1: Use pre-built image from Docker Hub
-    image: mugglejinx/owl:latest
-    
-    # Option 2: Build image locally
-    # Uncomment the following lines and comment out the 'image' line above to build locally
-    # build:
-    #   context: ..
-    #   dockerfile: .container/Dockerfile
-    
-    volumes:
-      # Mount .env file for easy API key configuration
-      - ../owl/.env:/app/owl/.env
-      # Mount examples folder to support running code examples inside the Docker container
-      - ../examples:/app/examples
-      # Mount data directory
-      - ./data:/app/owl/data
-      # Mount cache directories to avoid repeated downloads
-      - ~/.cache/pip:/root/.pip/cache
-      - ~/.cache/playwright:/root/.cache/ms-playwright
+    build:
+      context: ..
+      dockerfile: .container/Dockerfile
+    env_file:
+      - ../.env
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - DISPLAY=:99
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=1
-      - TERM=xterm-256color
-      - GRADIO_SERVER_NAME=0.0.0.0
-      - GRADIO_SERVER_PORT=7860
-      - PYTHONPATH=.
+      OLLAMA_BASE_URL: ${OLLAMA_DOCKER_BASE_URL:-http://host.docker.internal:11434/v1}
+      OWL_SERVER_HOST: 0.0.0.0
+      OWL_SERVER_PORT: "7860"
+      HOME: /tmp
+      XDG_CACHE_HOME: /tmp/cache
+      HF_HOME: /tmp/hf
+      OWL_ALLOW_NON_LOOPBACK: I_UNDERSTAND_THE_RISK
     ports:
-      - "7860:7860"
-    stdin_open: true
-    tty: true
-    shm_size: 2gb
-    # Simplify resource limits
-    deploy:
-      resources:
-        limits:
-          memory: 4G
-
-# Define persistent volumes for caching
-volumes:
-  playwright-cache:
-  pip-cache:
+      - "127.0.0.1:7860:7860"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=128m
+    user: "10001:10001"
+    init: true
+    pids_limit: 128
+    mem_limit: 2g
+    cpus: 2.0
+    restart: unless-stopped

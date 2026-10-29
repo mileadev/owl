@@ -1,3 +1,4 @@
+from owl.legacy import guarded_code_execution_toolkit
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -71,6 +72,8 @@ set_log_level(level="DEBUG")
 
 
 def construct_agent_list() -> List[Dict[str, Any]]:
+    from owl.legacy import require_legacy_opt_in
+    require_legacy_opt_in()
     """Construct a list of agents with their configurations."""
 
     # Get configuration from environment variables
@@ -122,7 +125,7 @@ def construct_agent_list() -> List[Dict[str, Any]]:
     document_processing_toolkit = DocumentProcessingToolkit(
         model=document_processing_model
     )
-    code_runner_toolkit = CodeExecutionToolkit(sandbox="subprocess", verbose=True)
+    code_runner_toolkit = guarded_code_execution_toolkit(sandbox="subprocess", verbose=True)
     file_toolkit = FileToolkit()
     excel_toolkit = ExcelToolkit()
     browser_toolkit = BrowserToolkit(
@@ -206,6 +209,8 @@ Here are some tips that help you perform web search:
 
 
 def construct_workforce() -> Workforce:
+    from owl.legacy import require_legacy_opt_in
+    require_legacy_opt_in()
     """Construct a workforce with coordinator and task agents."""
 
     # Get configuration from environment variables

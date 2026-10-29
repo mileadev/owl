@@ -1,3 +1,4 @@
+from owl.legacy import guarded_code_execution_toolkit
 #main.py
 import os
 import logging
@@ -146,7 +147,7 @@ def construct_interview_assistant(
                 web_agent_model=model,
                 planning_agent_model=model,
             ).get_tools(),
-            *CodeExecutionToolkit(sandbox="subprocess", verbose=True).get_tools(),
+            *guarded_code_execution_toolkit(sandbox="subprocess", verbose=True).get_tools(),
         ]
         logger.info("Using full toolset for comprehensive results (detailed=True)")
     else:

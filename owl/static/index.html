@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>OWL - Local Agents</title>
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <h1>OWL <small>Local-first Agent Runtime</small></h1>
+    <p>Run an assistant or reasoning workforce through your selected inference backend.</p>
+  </header>
+  <form id="task-form">
+    <div class="grid">
+      <label>Provider<select id="provider" name="provider">
+        <option value="ollama">Local Ollama</option>
+        <option value="ollama-cloud">Ollama Cloud</option>
+        <option value="bedrock">Amazon Bedrock</option>
+      </select></label>
+      <label>Mode<select id="mode" name="mode">
+        <option value="assistant">Assistant</option>
+        <option value="workforce">Analyst + verifier workforce</option>
+      </select></label>
+    </div>
+    <label>Model override <span>(optional)</span><input id="model" name="model" maxlength="200" placeholder="Uses your .env model if blank" autocomplete="off"></label>
+    <label>Task<textarea id="task" name="task" rows="6" maxlength="16000" required placeholder="Enter a task in English"></textarea></label>
+    <button id="run" type="submit">Run task</button>
+  </form>
+  <section aria-label="Task results">
+    <h2>Output</h2>
+    <p id="status" role="status" aria-live="polite">Ready</p>
+    <pre id="answer" aria-label="Model output"></pre>
+  </section>
+  <footer>Configure credentials only in your local .env file. Cloud requests may incur charges. No shell, filesystem or browser execution is enabled.</footer>
+</main>
+</body>
+</html>

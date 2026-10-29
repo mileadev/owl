@@ -189,6 +189,6 @@ if __name__ == "__main__":
     toolkit = SECToolkit()
     data_10k = toolkit.fetch_10k_filing("GOOG")
     data_10q = toolkit.fetch_10q_filing("GOOG")
-    # 检查 data_10k 是否为 None，如果不是则计算长度
+    # Check that data_10k is not None before calculating length
     print(f"fetch_10k_filing AAPL = {len(data_10k) if data_10k is not None else 0}")
     print(f"fetch_10q_filing AAPL = {len(data_10q) if data_10q is not None else 0}")

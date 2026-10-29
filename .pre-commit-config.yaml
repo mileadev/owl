@@ -1,37 +1,21 @@
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.7.4'
-    hooks:
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix, --show-fixes]
-        exclude: ^(docs/cookbooks/|community_usecase/)  # Ignore files under docs/cookbooks and community_usecase
-      - id: ruff-format
-        exclude: ^(docs/cookbooks/|community_usecase/)  # Ignore files under docs/cookbooks and community_usecase
-
   - repo: local
     hooks:
-      - id: mypy
-        name: Check mypy
-        entry: mypy --namespace-packages -p owl
-        language: python
-        types: [python]
+      - id: english-only
+        name: English-only tracked sources
+        entry: python scripts/check_english.py
+        language: system
         pass_filenames: false
-        require_serial: true
-        exclude: ^(docs/cookbooks/|community_usecase/)  # Ignore files under docs/cookbooks and community_usecase
-
-  - repo: local
-    hooks:
-    - id: check-license
-      name: Check License
-      entry: python licenses/update_license.py . licenses/license_template.txt 
-      language: system
-      types: [python]
-      exclude: ^(docs/cookbooks/|community_usecase/)  # Ignore files under docs/cookbooks and community_usecase
-
-  - repo: https://github.com/codespell-project/codespell
-    # Configuration for codespell is in pyproject.toml
-    rev: v2.4.1
-    hooks:
-    - id: codespell
-      additional_dependencies:
-      - tomli  # for python_version < '3.11'
+        always_run: true
+      - id: no-secrets
+        name: Check for tracked secrets
+        entry: python scripts/check_secrets.py
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: unit-tests
+        name: OWL unit tests
+        entry: python -m unittest discover -s tests -v
+        language: system
+        pass_filenames: false
+        always_run: true
