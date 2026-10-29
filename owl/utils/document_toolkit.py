@@ -20,20 +20,15 @@ from camel.utils import retry_on_error
 from camel.logger import get_logger
 from camel.models import BaseModelBackend
 from chunkr_ai import Chunkr
-import requests
 import mimetypes
 import json
 from typing import List, Optional, Tuple, Literal
 from urllib.parse import urlparse
 import os
-import subprocess
 import xmltodict
-import nest_asyncio
 import traceback
 import asyncio
-from crawl4ai import AsyncWebCrawler
 
-nest_asyncio.apply()
 
 logger = get_logger(__name__)
 

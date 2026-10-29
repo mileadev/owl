@@ -33,3 +33,13 @@ Default installation does not load community examples. Legacy runners that expos
 ## MCP SDK compatibility
 
 CAMEL 0.2.84 imports `FastMCP` from `mcp.server`. MCP Python SDK 2.x removed the symbol. Until CAMEL is migrated, constrain `mcp>=1.28,<2` and keep security updates on the maintained v1 line. Re-enable SDK 2 only after full integration tests pass.
+
+## Release checklist and rollback
+
+1. Run Python unit tests, the real CAMEL HTTP-mock test, English-only and secrets gates.
+2. Require the Docker build, headless UI smoke test, Bandit, dependency audit, image scan and CodeQL results.
+3. Manually test a local Ollama endpoint with no internet and both cloud providers with least-privilege, disposable test credentials; verify model IDs, costs, errors and audit logs.
+4. Check container hostname/interface and confirm UI is reachable only at host loopback; confirm missing cloud credentials fail closed.
+5. Merge to `main` only with green checks; tag a release after acceptance and record the image digest.
+
+Rollback: redeploy the prior Git SHA or `docker compose down`, then check out the previous release. No schema migrations or persistent storage changes are required.

@@ -6,7 +6,7 @@ from pathlib import Path
 
 pattern = re.compile(r"[\u3400-\u9fff\u3040-\u30ff]")
 suffixes = {".py", ".md", ".json", ".toml", ".txt", ".yml", ".yaml",
-            ".sh", ".bat", ".html", ".ini", ".cff"}
+            ".sh", ".bat", ".html", ".ini", ".cff", ".example", ".template", ".rst", ".css", ".js", ".ts"}
 errors = []
 for item in subprocess.check_output(["git", "ls-files", "-z"]).split(b"\0"):
     if not item:
