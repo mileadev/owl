@@ -518,12 +518,8 @@ def run_society(
         }
 
         chat_history.append(_data)
-        logger.info(
-            f"Round #{_round} user_response:\n {user_response.msgs[0].content if user_response.msgs and len(user_response.msgs) > 0 else ''}"
-        )
-        logger.info(
-            f"Round #{_round} assistant_response:\n {assistant_response.msgs[0].content if assistant_response.msgs and len(assistant_response.msgs) > 0 else ''}"
-        )
+        logger.debug("Round %s: user response received", _round)
+        logger.debug("Round %s: assistant response received", _round)
 
         if (
             assistant_response.terminated
@@ -534,7 +530,7 @@ def run_society(
 
         input_msg = assistant_response.msg
 
-    answer = chat_history[-1]["assistant"]
+    answer = chat_history[-1]["assistant"] if chat_history else ""
     token_info = {
         "completion_token_count": overall_completion_token_count,
         "prompt_token_count": overall_prompt_token_count,
@@ -559,9 +555,9 @@ async def arun_society(
         assistant_response, user_response = await society.astep(input_msg)
         # Check if usage info is available before accessing it
         if assistant_response.info.get("usage") and user_response.info.get("usage"):
-            overall_prompt_token_count += assistant_response.info["usage"].get(
+            overall_completion_token_count += assistant_response.info["usage"].get(
                 "completion_tokens", 0
-            )
+            ) + user_response.info["usage"].get("completion_tokens", 0)
             overall_prompt_token_count += assistant_response.info["usage"].get(
                 "prompt_tokens", 0
             ) + user_response.info["usage"].get("prompt_tokens", 0)
@@ -583,12 +579,8 @@ async def arun_society(
         }
 
         chat_history.append(_data)
-        logger.info(
-            f"Round #{_round} user_response:\n {user_response.msgs[0].content if user_response.msgs and len(user_response.msgs) > 0 else ''}"
-        )
-        logger.info(
-            f"Round #{_round} assistant_response:\n {assistant_response.msgs[0].content if assistant_response.msgs and len(assistant_response.msgs) > 0 else ''}"
-        )
+        logger.debug("Round %s: user response received", _round)
+        logger.debug("Round %s: assistant response received", _round)
 
         # Check other termination conditions
         if (
@@ -600,7 +592,7 @@ async def arun_society(
 
         input_msg = assistant_response.msg
 
-    answer = chat_history[-1]["assistant"]
+    answer = chat_history[-1]["assistant"] if chat_history else ""
     token_info = {
         "completion_token_count": overall_completion_token_count,
         "prompt_token_count": overall_prompt_token_count,

@@ -1,3 +1,4 @@
+from owl.legacy import guarded_code_execution_toolkit
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -210,7 +211,7 @@ def construct_society(question: str) -> ExcelRolePalying:
 
     # Configure toolkits
     tools = [
-        *CodeExecutionToolkit(sandbox="subprocess", verbose=True).get_tools(),
+        *guarded_code_execution_toolkit(sandbox="subprocess", verbose=True).get_tools(),
         *ExcelToolkit().get_tools(),
         *FileWriteToolkit(output_dir="./").get_tools(),
     ]

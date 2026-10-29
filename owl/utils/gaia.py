@@ -230,8 +230,6 @@ class GAIABenchmark(BaseBenchmark):
                 self._results.append(_result_info)
                 continue
             try:
-                logger.info(f"Task Question: {task['Question']}")
-                logger.info(f"Required tools: {task['Annotator Metadata']['Tools']}")
 
                 task_kwargs = {
                     "task_prompt": task["Question"],

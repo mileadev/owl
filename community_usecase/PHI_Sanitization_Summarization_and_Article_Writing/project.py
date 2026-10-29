@@ -1,3 +1,4 @@
+from owl.legacy import guarded_code_execution_toolkit
 import streamlit as st
 from dotenv import load_dotenv
 from pathlib import Path
@@ -49,7 +50,7 @@ def construct_society(question: str) -> RolePlaying:
 
     # Configure toolkits
     tools = [
-        *CodeExecutionToolkit(sandbox="subprocess", verbose=True).get_tools(),
+        *guarded_code_execution_toolkit(sandbox="subprocess", verbose=True).get_tools(),
         SearchToolkit().search_duckduckgo,
         SearchToolkit().search_wiki,
         SearchToolkit().search_baidu,
