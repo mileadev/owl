@@ -37,3 +37,7 @@ Inspected the fork's 153-file baseline and 98 text/code artifacts on the hardeni
 ## Validation policy
 
 All checks must pass before merging. The Python suite uses a live local HTTP mock to exercise the actual CAMEL/OpenAI request path; model-factory routing for the two cloud providers is mocked. The Docker suite starts the UI in a restricted container and probes its HTTP listener. CodeQL/Trivy/pip-audit/Secret/Linguistic checks execute in CI. The latest results are visible in GitHub Actions for PR #1.
+
+## October 2026 Pillow vulnerability and Gradio dependency conflict
+
+Security scanning discovered 39 advisories affecting Pillow 12.3.0, resolved in Pillow 13.0.0. Gradio 6.x declares `pillow<13`, blocking the fix. This fork replaces the local Gradio app with a self-contained Python standard-library HTTP UI and pins `pillow>=13,<14`. The replacement UI uses no third-party JavaScript, blocks cross-origin POST requests and never exposes environment variables. Verify the resulting dependency graph with pip-audit and the built image with Trivy.

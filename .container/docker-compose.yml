@@ -7,12 +7,12 @@ services:
       - ../.env
     environment:
       OLLAMA_BASE_URL: ${OLLAMA_DOCKER_BASE_URL:-http://host.docker.internal:11434/v1}
-      GRADIO_SERVER_NAME: 0.0.0.0
-      GRADIO_SERVER_PORT: "7860"
+      OWL_SERVER_HOST: 0.0.0.0
+      OWL_SERVER_PORT: "7860"
       HOME: /tmp
       XDG_CACHE_HOME: /tmp/cache
       HF_HOME: /tmp/hf
-      GRADIO_ANALYTICS_ENABLED: "False"
+      OWL_ALLOW_NON_LOOPBACK: I_UNDERSTAND_THE_RISK
     ports:
       - "127.0.0.1:7860:7860"
     extra_hosts:

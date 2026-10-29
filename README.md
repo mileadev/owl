@@ -15,7 +15,7 @@ ollama pull qwen3:8b
 .venv/bin/python -m owl.webapp
 ```
 
-The UI listens on http://127.0.0.1:7860. Ollama must be running on port 11434.
+The dependency-light local HTTP UI listens on http://127.0.0.1:7860. Ollama must be running on port 11434.
 
 ## Provider configuration
 
@@ -42,6 +42,6 @@ Docker Desktop uses `host.docker.internal` for native Ollama. Consult [deploymen
 
 ## Security
 
-Default CLI/UI does not expose shell, filesystem or browser execution. Credentials remain in an ignored local `.env` and are never rendered by the UI. The default deployment must not be exposed publicly without authentication. The core runtime has no autonomous command, browser, or filesystem access. Legacy examples and community integrations require the optional `legacy` dependencies and are **not** safe for untrusted tasks; do not use them with sensitive host credentials.
+Default CLI/UI does not expose shell, filesystem or browser execution. Credentials remain in an ignored local `.env` and are never rendered by the UI. The default deployment must not be exposed publicly without authentication. The core runtime and local HTTP UI have no autonomous command, browser, or filesystem access. The UI rejects cross-origin writes and does not accept credentials. Legacy examples and community integrations require the optional `legacy` dependencies and are **not** safe for untrusted tasks; do not use them with sensitive host credentials.
 
 See [security audit](docs/SECURITY_AUDIT.md) and [hardening plan](docs/HARDENING_PLAN.md) for evidence, tests and residual risks. [Apache-2.0](licenses/LICENSE); original attribution in [CITATION.cff](CITATION.cff).

@@ -43,3 +43,5 @@ CAMEL 0.2.84 imports `FastMCP` from `mcp.server`. MCP Python SDK 2.x removed the
 5. Merge to `main` only with green checks; tag a release after acceptance and record the image digest.
 
 Rollback: redeploy the prior Git SHA or `docker compose down`, then check out the previous release. No schema migrations or persistent storage changes are required.
+
+Dependency remediation: Gradio 6.x prevents the Pillow 13 security update. The local UI has been replaced with standard-library HTTP/HTML/JS; Pillow 13 is explicitly required and audited.
