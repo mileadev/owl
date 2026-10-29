@@ -25,8 +25,11 @@ def require_local_document(path: str) -> Path:
     target = Path(path).expanduser().resolve()
     if root == Path("/") or not target.is_relative_to(root):
         raise PermissionError("Document path is outside OWL_DOCUMENT_ROOT.")
-    if set(target.relative_to(root).parts) & _BLOCKED_NAMES:
-        raise PermissionError("Access to private configuration files is not allowed.")
+    for component in target.relative_to(root).parts:
+        name = component.lower()
+        if (name in _BLOCKED_NAMES or name.startswith(".env")
+                or name.endswith((".pem", ".key", ".p12", ".pfx"))):
+            raise PermissionError("Access to private configuration files is not allowed.")
     if not target.is_file():
         raise FileNotFoundError("Document does not exist.")
     return target

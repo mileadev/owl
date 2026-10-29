@@ -11,9 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-import sys
-
-sys.path.append("../")
+import os
 
 import json
 import random
@@ -66,8 +64,12 @@ class GAIABenchmark(BaseBenchmark):
         r"""Download the GAIA dataset."""
         from huggingface_hub import snapshot_download
 
+        revision = os.getenv("OWL_GAIA_REVISION", "")
+        if not re.fullmatch(r"[0-9a-f]{40}", revision):
+            raise ValueError("Set OWL_GAIA_REVISION to an audited 40-character commit SHA.")
         snapshot_download(
             repo_id="gaia-benchmark/GAIA",
+            revision=revision,
             repo_type="dataset",
             local_dir=self.data_dir,
             local_dir_use_symlinks=True,

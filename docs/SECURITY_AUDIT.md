@@ -21,6 +21,7 @@ Inspected the fork's 153-file baseline and 98 text/code artifacts on the hardeni
 | OWL-009 | Medium | Unused upstream-specific Docker publishing workflow | Removed, replaced with build/test/scan workflows |
 | OWL-010 | Medium | Chinese/Japanese UI variants, scripts, assets and translated samples | Removed; automated English-language gate |
 | OWL-011 | Medium | README linked missing examples and duplicate out-of-date installation flows | Replaced with local quick-start and independent deployment doc |
+| OWL-013 | Medium | GAIA benchmark downloaded an unpinned Hugging Face dataset revision | Require an explicit 40-character `OWL_GAIA_REVISION` SHA before downloading |
 | OWL-012 | Medium | Runtime dependencies included unnecessary crawling/media/experimental SDKs | Keep core runtime small; legacy extras are opt-in |
 
 ## Residual risks and constraints

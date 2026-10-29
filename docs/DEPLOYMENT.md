@@ -31,3 +31,5 @@ Optional (untrusted) legacy toolkits: install with `uv pip install -e '.[legacy]
 The previous `.container/build_docker*.{sh,bat}` and `run_in_docker*.{sh,bat}` helpers are retired. Use standard Docker Compose commands instead.
 
 CAMEL 0.2.84 currently requires MCP SDK v1 for its `FastMCP` imports. Do not separately upgrade `mcp` to v2 in this environment.
+
+GAIA legacy benchmarking requires `OWL_GAIA_REVISION` set to an audited 40-character Hugging Face dataset commit to prevent mutable supply-chain downloads.
