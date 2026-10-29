@@ -9,7 +9,7 @@ class ProviderTests(unittest.TestCase):
         with patch.dict(os.environ, {"OWL_PROVIDER": "ollama"}, clear=True):
             result = resolve_provider()
         self.assertEqual(result.url, "http://127.0.0.1:11434/v1")
-        self.assertNotIn("ollama", repr(result))
+        self.assertEqual(result.provider, "ollama")
 
     def test_private_cluster(self):
         self.assertEqual(_local_endpoint("http://100.108.101.105:11434/v1"),

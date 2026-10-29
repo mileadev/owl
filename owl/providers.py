@@ -35,7 +35,14 @@ def _local_endpoint(value: str) -> str:
     if parts.scheme == "http":
         try:
             ip = ipaddress.ip_address(parts.hostname)
-            safe = (ip.is_private or ip.is_loopback or ip in _PRIVATE_SHARED) and not ip.is_unspecified
+            safe = (
+                ip.is_loopback
+                or ip in ipaddress.ip_network("10.0.0.0/8")
+                or ip in ipaddress.ip_network("172.16.0.0/12")
+                or ip in ipaddress.ip_network("192.168.0.0/16")
+                or ip in ipaddress.ip_network("fc00::/7")
+                or ip in _PRIVATE_SHARED
+            )
         except ValueError:
             safe = parts.hostname.lower() in ("localhost", "host.docker.internal")
         if not safe:

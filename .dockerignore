@@ -1,0 +1,25 @@
+# Never send host credentials, VCS metadata or cached runtime artifacts into image builds.
+.git
+.github
+**/.env
+**/.env.*
+!/.env.example
+**/__pycache__
+**/*.pyc
+**/*.log
+**/.venv
+**/venv
+**/node_modules
+**/tmp
+**/data
+**/*.db
+**/*.sqlite
+**/*.pem
+**/*.key
+**/id_rsa*
+community_usecase
+assets
+tests
+scripts
+docs
+uv.lock

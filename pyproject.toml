@@ -21,9 +21,15 @@ keywords = [
     "learning-systems"
 ]
 dependencies = [
+    "camel-ai==0.2.84",
+    "python-dotenv>=1.0,<2",
+    "gradio>=6.4,<7",
+]
+
+[project.optional-dependencies]
+legacy = [
     "camel-ai[owl]==0.2.84",
     "docx2markdown>=0.1.1",
-    "gradio>=6.4.0",
     "mcp-simple-arxiv==0.2.2",
     "mcp-server-fetch==2025.1.17",
     "xmltodict>=0.14.2",

@@ -42,6 +42,6 @@ Docker Desktop uses `host.docker.internal` for native Ollama. Consult [deploymen
 
 ## Security
 
-Default CLI/UI does not expose shell, filesystem or browser execution. Credentials remain in an ignored local `.env` and are never rendered by the UI. The default deployment must not be exposed publicly without authentication. Legacy community examples are not a sandbox and may have unsafe tool access.
+Default CLI/UI does not expose shell, filesystem or browser execution. Credentials remain in an ignored local `.env` and are never rendered by the UI. The default deployment must not be exposed publicly without authentication. Legacy examples and community integrations require the optional `legacy` dependencies and are **not** safe for untrusted tasks; do not use them with sensitive host credentials.
 
 See [audit and hardening plan](docs/HARDENING_PLAN.md) for findings, tests and remaining work. [Apache-2.0](licenses/LICENSE); original attribution in [CITATION.cff](CITATION.cff).
